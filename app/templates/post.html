@@ -1,0 +1,22 @@
+<!--固定链接模板-->
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+{% block title %}Flasky - Post{% endblock %}
+{% block page_content %}
+
+{% include '_posts.html' %}
+<h4 id="comments">评论</h4>
+<!-- 评论时需要用户权限的，所以我们无法通过@login_required修饰器来把某些用户筛走。so -->
+{% if current_user.can(Permission.COMMENT) %}
+<div class="comment-form">
+    {{ wtf.quick_form(form) }}
+</div>
+{% endif %}
+{% include '_comments.html' %}
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.post', fragment='#comments', id=posts[0].id) }}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,49 @@
+<ul class="posts">
+    {% for post in posts %}
+    <li class="post">
+      <!--   # 用户头像部分 -->
+        <div class="post-thumbnail">
+            <a href="{{ url_for('.user', username=post.author.username) }}">
+                <img class="img-rounded profile-thumbnail" src="{{ post.author.gravatar(size=40) }}">
+            </a>
+        </div>
+           <!--部分实体文字内容部分-->
+        <div class="post-content">
+          <!--博客发布日期，计算的是发布日期距离今天有几天-->
+            <div class="post-date">{{ moment(post.timestamp).fromNow() }}</div>
+           <!--博客的作者，可以点击进入作者主页-->
+            <div class="post-author"><a href="{{ url_for('.user', username=post.author.username) }}">{{ post.author.username }}</a></div>
+           <!--博客的内容-->
+            <div class="post-body">
+                {% if post.body_html %}
+                    {{ post.body_html | safe }}
+                {% else %}
+                    {{ post.body }}
+                {% endif %}
+            </div>
+            <!--加上文章的固定链接-->
+            <div class="post-footer">
+                {% if current_user == post.author %}
+                <a href="{{ url_for('.edit', id=post.id) }}">
+                    <span class="label label-primary">编辑</span>
+                </a>
+                {% elif current_user.is_administrator() %}
+                <a href="{{ url_for('.edit', id=post.id) }}">
+                    <span class="label label-danger">编辑[管理员]</span>
+                </a>
+                {% endif %}
+
+                <a href="{{ url_for('.post', id=post.id) }}">
+
+                    <span class="label label-default">Permalink</span>
+
+                </a>
+                <!--加上url片段-->
+                <a href="{{ url_for('.post', id=post.id) }}#comments">
+                    <span class="label label-primary">{{ post.comments.count() }}评论</span>
+                </a>
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
