@@ -1,5 +1,5 @@
 from config import config
-
+from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_mail import Mail
@@ -7,7 +7,7 @@ from flask_migrate import Migrate
 from flask_moment import Moment
 from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlcheml
-
+from flask import Flask
 #  扩展类
 bootstrap = Bootstrap()
 mail = Mail()
