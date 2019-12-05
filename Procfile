@@ -1,1 +1,1 @@
-web: waitress-serve --port=$PORT flasky:app
+web: waitress-serve --port= 8000 flasky:app
