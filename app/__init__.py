@@ -1,20 +1,17 @@
-from config import config
 from flask import Flask
 from flask_bootstrap import Bootstrap
-from flask_login import LoginManager
 from flask_mail import Mail
-from flask_migrate import Migrate
 from flask_moment import Moment
-from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
-#  扩展类
+from flask_login import LoginManager
+from flask_pagedown import PageDown
+from config import config
+#  实例化
 bootstrap = Bootstrap()
 mail = Mail()
 moment = Moment()
 db = SQLAlchemy()
 pagedown = PageDown()
-migrate = Migrate()
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'  # LoginManger 对象的login_view属性用于设置登陆页面的端点，
@@ -22,8 +19,9 @@ login_manager.login_view = 'auth.login'  # LoginManger 对象的login_view属性
 
 
 def create_app(config_name):
-    app = Flask(__name__, template_folder='C:/Users/jieji/.virtualenvs/jieji-8rKxeQws/flasky/app/templates')
+    app = Flask(__name__, template_folder='C:\Users\jieji\Desktop\git test\jieji-8rKxeQws\app\templates')
     app.config.from_object(config[config_name])
+    #  传入程序实例app以初始化扩展
     config[config_name].init_app(app)
 
     bootstrap.init_app(app)
@@ -32,7 +30,11 @@ def create_app(config_name):
     db.init_app(app)
     pagedown.init_app(app)
     login_manager.init_app(app)
-    migrate.init_app(app, db)
+    pagedown.init_app(app)
+
+    if app.config['SSL_REDIRECT']:
+        from flask_sslify import SSLify
+        sslify = SSLify(app)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
