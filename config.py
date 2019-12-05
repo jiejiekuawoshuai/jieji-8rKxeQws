@@ -18,6 +18,7 @@ class Config:  # 所有配置类的父类，通用的配置写在这里
     FLASKY_POSTS_PER_PAGE = 20
     FLASKY_FOLLOWERS_PER_PAGE = 20
     FLASKY_COMMENTS_PER_PAGE = 20
+    SSL_REDIRECT = False
     @staticmethod
     def init_app(app):
         pass
@@ -38,9 +39,26 @@ class ProductionConfig(Config):
                               'sqlite:///' + os.path.join(basedir, 'data.sqlite')
 
 
+class HerokuConfig(ProductionConfig):
+    SSL_REDIRECT = True if os.environ.get('DYNO') else False
+    @classmethod
+    def init_app(cls, app):
+        ProductionConfig.init_app(app)
+        # handle reverse proxy server headers
+        from werkzeug.contrib.fixers import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app)
+
+        # 输出到logging
+        import logging
+        from logging import StreamHandler
+        file_handler = StreamHandler()
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
+
 config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
+    'heroku': HerokuConfig,
     'production': ProductionConfig,
     'default': DevelopmentConfig
 }
