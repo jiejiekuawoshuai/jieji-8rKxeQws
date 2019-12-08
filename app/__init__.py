@@ -19,7 +19,7 @@ login_manager.login_view = 'auth.login'  # LoginManger 对象的login_view属性
 
 
 def create_app(config_name):
-    app = Flask(__name__, template_folder='C:\Users\jieji\Desktop\git test\jieji-8rKxeQws\app\templates')
+    app = Flask(__name__)
     app.config.from_object(config[config_name])
     #  传入程序实例app以初始化扩展
     config[config_name].init_app(app)
